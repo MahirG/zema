@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, viewport-fit=cover">
+<title>Zema — Music distribution for Ethiopia & Africa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=Noto+Sans+Ethiopic:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0b0a08;--ink-2:#100e0b;--ink-3:#15120d;--panel:rgba(255,252,245,.035);--panel-2:rgba(255,252,245,.055);
+  --line:rgba(232,176,75,.16);--line-soft:rgba(244,239,231,.08);
+  --gold:#e8b04b;--gold-2:#f5d489;--gold-deep:#c68f2f;
+  --text:#f4efe7;--muted:#9c958a;--muted-2:#736c62;
+  --green:#5ec27f;--blue:#6aa6ff;--red:#e2726e;
+  --r:16px;--maxw:1180px;--sans:'Sora',system-ui,sans-serif;--body:'Inter',system-ui,sans-serif;--eth:'Noto Sans Ethiopic',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{background:var(--ink);color:var(--text);font-family:var(--body);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body.am .i18{font-family:var(--eth)}
+h1,h2,h3,h4{font-family:var(--sans);font-weight:700;letter-spacing:-.02em;line-height:1.12}
+a{color:inherit;text-decoration:none}
+.gold{color:var(--gold)}
+.grad{background:linear-gradient(120deg,var(--gold-2),var(--gold) 45%,var(--gold-deep));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 22px}
+.glow{position:fixed;inset:0;z-index:0;pointer-events:none}
+.glow::before,.glow::after{content:"";position:absolute;border-radius:50%;filter:blur(120px);opacity:.45}
+.glow::before{width:520px;height:520px;top:-160px;left:-120px;background:radial-gradient(circle,rgba(232,176,75,.22),transparent 70%)}
+.glow::after{width:600px;height:600px;top:40%;right:-200px;background:radial-gradient(circle,rgba(198,143,47,.13),transparent 70%)}
+.grain{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.04;mix-blend-mode:overlay;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+#root{position:relative;z-index:2}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:var(--sans);font-weight:600;font-size:14.5px;padding:11px 20px;border-radius:999px;cursor:pointer;border:1px solid transparent;transition:transform .18s,box-shadow .25s,background .2s,border-color .2s;white-space:nowrap}
+.btn-gold{background:linear-gradient(120deg,var(--gold-2),var(--gold) 55%,var(--gold-deep));color:#1a1408;box-shadow:0 6px 22px -8px rgba(232,176,75,.55)}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 12px 30px -8px rgba(232,176,75,.65)}
+.btn-ghost{border-color:var(--line);color:var(--text);background:var(--panel)}
+.btn-ghost:hover{border-color:var(--gold);transform:translateY(-2px)}
+.btn-sm{padding:8px 15px;font-size:13.5px}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.brand{display:flex;align-items:center;gap:9px;font-family:var(--sans);font-weight:800;font-size:20px;letter-spacing:-.03em}
+.brand svg{width:25px;height:25px}
+.brand small{font-family:var(--eth);font-weight:500;color:var(--muted);font-size:14px}
+
+/* ===== MARKETING HEADER (TuneCore-style) ===== */
+.mhead{position:sticky;top:0;z-index:60;backdrop-filter:blur(16px);background:rgba(11,10,8,.6);border-bottom:1px solid var(--line-soft)}
+.mnav{display:flex;align-items:center;justify-content:space-between;height:66px}
+.mlinks{display:flex;align-items:center;gap:28px}
+.mlinks a{color:var(--muted);font-size:14.5px;font-weight:500;transition:color .2s;position:relative}
+.mlinks a:hover{color:var(--text)}
+.mlinks a::after{content:"";position:absolute;left:0;bottom:-6px;height:2px;width:0;background:var(--gold);transition:width .25s}
+.mlinks a:hover::after{width:100%}
+.mctrl{display:flex;align-items:center;gap:12px}
+.lang{display:flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;font-size:12.5px;font-weight:600}
+.lang button{background:transparent;color:var(--muted);border:0;padding:6px 11px;cursor:pointer;font-family:var(--sans);transition:.2s}
+.lang button.on{background:linear-gradient(120deg,var(--gold),var(--gold-deep));color:#1a1408}
+.login-link{color:var(--text);font-family:var(--sans);font-weight:600;font-size:14.5px;cursor:pointer}
+.burger{display:none;flex-direction:column;gap:5px;background:none;border:0;cursor:pointer;padding:6px}
+.burger span{width:24px;height:2px;background:var(--text);border-radius:2px;transition:.3s}
+.burger.on span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.burger.on span:nth-child(2){opacity:0}
+.burger.on span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+/* drawer */
+.drawer{position:fixed;inset:0;z-index:70;pointer-events:none}
+.drawer .scrim{position:absolute;inset:0;background:rgba(0,0,0,.6);opacity:0;transition:.3s;backdrop-filter:blur(2px)}
+.drawer .panel{position:absolute;top:0;right:0;height:100%;width:min(86vw,340px);background:var(--ink-2);border-left:1px solid var(--line);transform:translateX(100%);transition:transform .32s cubic-bezier(.3,.7,.2,1);padding:26px 24px;display:flex;flex-direction:column;gap:6px}
+.drawer.open{pointer-events:auto}
+.drawer.open .scrim{opacity:1}
+.drawer.open .panel{transform:none}
+.drawer .panel a{padding:15px 4px;font-family:var(--sans);font-weight:600;font-size:17px;border-bottom:1px solid var(--line-soft);color:var(--text)}
+.drawer .panel .btn{margin-top:14px;width:100%}
+.drawer .dclose{align-self:flex-end;background:none;border:0;color:var(--muted);font-size:28px;cursor:pointer;margin-bottom:10px}
+
+/* ===== LANDING ===== */
+.hero{padding:88px 0 66px;text-align:center}
+.badge{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:7px 15px;font-size:13px;color:var(--muted);margin-bottom:26px}
+.badge .dot{width:7px;height:7px;border-radius:50%;background:var(--gold);box-shadow:0 0 10px var(--gold)}
+.hero h1{font-size:clamp(2.4rem,6vw,4.4rem);font-weight:800;max-width:16ch;margin:0 auto 20px}
+.hero p{color:var(--muted);font-size:clamp(1rem,2vw,1.2rem);max-width:56ch;margin:0 auto 34px}
+.hcta{display:flex;gap:13px;justify-content:center;flex-wrap:wrap}
+.hcta .btn{padding:14px 26px;font-size:15.5px}
+.wave{margin:52px auto 0;max-width:740px;opacity:.9}
+.wave svg{width:100%;height:auto;display:block}
+.dsp{padding:30px 0;border-top:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft)}
+.dsp .lbl{text-align:center;color:var(--muted-2);font-size:12px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:18px;font-weight:600}
+.dsprow{display:flex;flex-wrap:wrap;gap:11px;justify-content:center}
+.pill{border:1px solid var(--line-soft);border-radius:999px;padding:8px 16px;font-size:13.5px;color:var(--muted);font-weight:500;font-family:var(--sans)}
+section.sec{padding:84px 0}
+.sechead{text-align:center;max-width:60ch;margin:0 auto 50px}
+.eyebrow{color:var(--gold);font-family:var(--sans);font-weight:600;font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;margin-bottom:14px}
+.sechead h2{font-size:clamp(1.8rem,3.8vw,2.7rem)}
+.sechead p{color:var(--muted);margin-top:14px}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.step{background:var(--panel);border:1px solid var(--line-soft);border-radius:var(--r);padding:26px 20px;transition:transform .3s,border-color .3s}
+.step:hover{transform:translateY(-5px);border-color:var(--line)}
+.step .n{font-family:var(--sans);font-weight:800;font-size:14px;color:#1a1408;width:32px;height:32px;display:grid;place-items:center;border-radius:9px;background:linear-gradient(120deg,var(--gold-2),var(--gold-deep));margin-bottom:18px}
+.step h3{font-size:1.1rem;margin-bottom:8px}.step p{color:var(--muted);font-size:.92rem}
+.feat{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.fcard{background:var(--panel);border:1px solid var(--line-soft);border-radius:var(--r);padding:28px;transition:transform .3s,border-color .3s,background .3s}
+.fcard:hover{transform:translateY(-5px);border-color:var(--line);background:rgba(232,176,75,.04)}
+.ic{width:44px;height:44px;border-radius:11px;display:grid;place-items:center;border:1px solid var(--line);margin-bottom:18px;color:var(--gold)}
+.ic svg{width:21px;height:21px}
+.fcard h3{font-size:1.16rem;margin-bottom:9px}.fcard p{color:var(--muted);font-size:.95rem}
+.cta-band{text-align:center;background:linear-gradient(160deg,rgba(232,176,75,.08),rgba(255,252,245,.02));border:1px solid var(--line);border-radius:26px;padding:56px 30px;max-width:820px;margin:0 auto}
+.cta-band h2{font-size:clamp(1.8rem,3.6vw,2.6rem);margin-bottom:14px}
+.cta-band p{color:var(--muted);max-width:48ch;margin:0 auto 26px}
+footer{border-top:1px solid var(--line-soft);padding:50px 0 30px;margin-top:40px}
+.ftop{display:flex;justify-content:space-between;flex-wrap:wrap;gap:28px;margin-bottom:34px}
+.flead{color:var(--muted);max-width:32ch;font-size:.93rem;margin-top:12px}
+.fcols{display:flex;gap:54px;flex-wrap:wrap}
+.fcol h4{font-family:var(--sans);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted-2);margin-bottom:14px}
+.fcol a{display:block;color:var(--muted);font-size:.92rem;margin-bottom:10px}.fcol a:hover{color:var(--gold)}
+.fbot{border-top:1px solid var(--line-soft);padding-top:20px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;color:var(--muted-2);font-size:.85rem}
+
+/* ===== AUTH ===== */
+.auth{min-height:calc(100vh - 66px);display:grid;place-items:center;padding:40px 20px}
+.authcard{width:100%;max-width:420px;background:linear-gradient(160deg,rgba(255,252,245,.05),rgba(255,252,245,.02));border:1px solid var(--line);border-radius:22px;padding:38px 32px}
+.authcard h2{font-size:1.7rem;margin-bottom:6px}
+.authcard .sub{color:var(--muted);font-size:.95rem;margin-bottom:26px}
+.field{margin-bottom:16px}
+.field label{display:block;font-size:13px;color:var(--muted);margin-bottom:7px;font-weight:500}
+.field input,.field select{width:100%;background:rgba(0,0,0,.32);border:1px solid var(--line-soft);border-radius:12px;padding:13px 15px;color:var(--text);font-family:var(--body);font-size:15px;outline:none;transition:border .2s}
+.field input:focus,.field select:focus{border-color:var(--gold)}
+.authcard .btn{width:100%;margin-top:6px;padding:14px}
+.swap{text-align:center;color:var(--muted);font-size:.9rem;margin-top:20px}
+.swap b{color:var(--gold);cursor:pointer}
+.demo-tip{margin-top:16px;padding:12px 14px;border:1px dashed var(--line);border-radius:12px;color:var(--muted);font-size:.85rem;text-align:center}
+
+/* ===== APP SHELL ===== */
+.app{display:grid;grid-template-columns:250px 1fr;min-height:100vh}
+.side{position:sticky;top:0;height:100vh;border-right:1px solid var(--line-soft);background:rgba(16,14,11,.5);backdrop-filter:blur(10px);padding:22px 16px;display:flex;flex-direction:column;gap:4px}
+.side .brand{padding:6px 8px 20px}
+.snav{color:var(--muted);display:flex;align-items:center;gap:12px;padding:12px 13px;border-radius:12px;font-weight:500;font-size:14.5px;cursor:pointer;transition:.2s}
+.snav svg{width:19px;height:19px;flex:none}
+.snav:hover{background:var(--panel);color:var(--text)}
+.snav.on{background:linear-gradient(120deg,rgba(232,176,75,.18),rgba(232,176,75,.05));color:var(--gold);border:1px solid var(--line)}
+.side .newbtn{margin:12px 0 0;width:100%}
+.side .foot{margin-top:auto;padding:12px 8px;color:var(--muted-2);font-size:.8rem;border-top:1px solid var(--line-soft)}
+.side .logout{color:var(--muted);cursor:pointer;font-size:13px;margin-top:8px;display:inline-block}
+.side .logout:hover{color:var(--red)}
+.main{padding:30px 34px 90px;max-width:1000px}
+.apptop{display:flex;align-items:center;justify-content:space-between;margin-bottom:26px;gap:14px}
+.apptop h1{font-size:1.7rem}
+.apptop .who{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:.9rem}
+.avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold-deep));display:grid;place-items:center;color:#1a1408;font-family:var(--sans);font-weight:700;font-size:14px}
+
+/* stat cards */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:26px}
+.stat{background:var(--panel);border:1px solid var(--line-soft);border-radius:14px;padding:20px}
+.stat .k{color:var(--muted);font-size:12.5px;font-weight:500;margin-bottom:10px;display:flex;align-items:center;gap:7px}
+.stat .k svg{width:15px;height:15px;color:var(--gold)}
+.stat .v{font-family:var(--sans);font-weight:700;font-size:1.7rem;letter-spacing:-.02em}
+.stat .d{font-size:12px;color:var(--green);margin-top:5px}
+
+.panelbox{background:var(--panel);border:1px solid var(--line-soft);border-radius:16px;padding:24px;margin-bottom:20px}
+.panelbox h3{font-size:1.15rem;margin-bottom:4px}
+.panelbox .ph{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;gap:12px}
+.panelbox .ph p{color:var(--muted);font-size:.88rem}
+
+/* bar chart */
+.chart{display:flex;align-items:flex-end;gap:14px;height:150px;padding-top:10px}
+.chart .col{flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;justify-content:flex-end;height:100%}
+.chart .bar{width:100%;max-width:42px;border-radius:7px 7px 0 0;background:linear-gradient(180deg,var(--gold),var(--gold-deep));transition:height .8s cubic-bezier(.2,.7,.2,1)}
+.chart .cl{font-size:11px;color:var(--muted-2)}
+
+/* lists / tables */
+.rlist{display:flex;flex-direction:column;gap:10px}
+.ritem{display:flex;align-items:center;gap:14px;padding:14px;border:1px solid var(--line-soft);border-radius:13px;background:var(--panel);cursor:pointer;transition:.2s}
+.ritem:hover{border-color:var(--line);transform:translateX(3px)}
+.art{width:48px;height:48px;border-radius:11px;background:linear-gradient(135deg,var(--gold),var(--gold-deep));flex:none;display:grid;place-items:center;color:#1a1408}
+.ritem .meta{flex:1;min-width:0}
+.ritem .meta b{font-family:var(--sans);font-size:1rem;display:block}
+.ritem .meta span{color:var(--muted);font-size:.82rem}
+.badge2{font-family:var(--sans);font-weight:600;font-size:11.5px;padding:5px 11px;border-radius:999px;border:1px solid;white-space:nowrap}
+.b-live{color:var(--green);border-color:rgba(94,194,127,.35);background:rgba(94,194,127,.1)}
+.b-deliv{color:var(--blue);border-color:rgba(106,166,255,.35);background:rgba(106,166,255,.1)}
+.b-draft{color:var(--muted);border-color:var(--line-soft);background:var(--panel)}
+.b-review{color:var(--gold);border-color:var(--line);background:rgba(232,176,75,.1)}
+.b-down{color:var(--red);border-color:rgba(226,114,110,.35);background:rgba(226,114,110,.1)}
+table{width:100%;border-collapse:collapse}
+th,td{text-align:left;padding:12px 10px;font-size:.9rem;border-bottom:1px solid var(--line-soft)}
+th{color:var(--muted-2);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.05em}
+td .mono{font-family:var(--sans)}
+.right{text-align:right}
+
+/* wizard */
+.wsteps{display:flex;gap:8px;margin-bottom:28px;flex-wrap:wrap}
+.wstep{flex:1;min-width:120px;padding:12px 14px;border:1px solid var(--line-soft);border-radius:12px;font-size:13px;color:var(--muted);display:flex;align-items:center;gap:9px}
+.wstep .num{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-family:var(--sans);font-weight:700;font-size:12px;background:var(--ink-3);border:1px solid var(--line-soft)}
+.wstep.on{border-color:var(--gold);color:var(--text)}
+.wstep.on .num{background:linear-gradient(120deg,var(--gold),var(--gold-deep));color:#1a1408}
+.wstep.done .num{background:var(--green);color:#0b0a08}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.upload{border:1.5px dashed var(--line);border-radius:14px;padding:26px;text-align:center;color:var(--muted);cursor:pointer;transition:.2s}
+.upload:hover{border-color:var(--gold);color:var(--text);background:rgba(232,176,75,.03)}
+.upload.filled{border-style:solid;border-color:var(--green);color:var(--green)}
+.wnav{display:flex;justify-content:space-between;margin-top:26px;gap:12px}
+.sumbar{display:flex;align-items:center;justify-content:space-between;padding:12px 15px;border-radius:11px;border:1px solid var(--line-soft);margin-top:8px;font-family:var(--sans);font-weight:600;font-size:.95rem}
+.sumbar.ok{border-color:rgba(94,194,127,.4);color:var(--green);background:rgba(94,194,127,.07)}
+.sumbar.bad{border-color:rgba(226,114,110,.4);color:var(--red);background:rgba(226,114,110,.07)}
+.splitrow{display:grid;grid-template-columns:1.4fr 1fr .7fr auto;gap:10px;margin-bottom:10px;align-items:center}
+.splitrow input,.splitrow select{background:rgba(0,0,0,.3);border:1px solid var(--line-soft);border-radius:10px;padding:10px 12px;color:var(--text);font-size:14px;outline:none}
+.splitrow input:focus,.splitrow select:focus{border-color:var(--gold)}
+.xbtn{background:none;border:1px solid var(--line-soft);color:var(--muted);border-radius:9px;width:36px;height:36px;cursor:pointer;font-size:16px}
+.xbtn:hover{border-color:var(--red);color:var(--red)}
+.issue{display:flex;gap:10px;align-items:flex-start;padding:11px 13px;border-radius:11px;margin-bottom:9px;font-size:.9rem}
+.issue.err{background:rgba(226,114,110,.08);border:1px solid rgba(226,114,110,.3);color:#f0b3b0}
+.issue.warn{background:rgba(232,176,75,.07);border:1px solid var(--line);color:var(--gold-2)}
+.issue svg{width:17px;height:17px;flex:none;margin-top:2px}
+
+/* delivery grid */
+.dgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.dcell{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border:1px solid var(--line-soft);border-radius:11px;font-size:.85rem}
+.dstatus{width:8px;height:8px;border-radius:50%}
+.ds-live{background:var(--green);box-shadow:0 0 8px var(--green)}
+.ds-q{background:var(--blue);animation:pulse 1.2s infinite}
+@keyframes pulse{50%{opacity:.35}}
+
+/* wallet */
+.balcard{background:linear-gradient(150deg,rgba(232,176,75,.14),rgba(255,252,245,.02));border:1px solid var(--line);border-radius:20px;padding:30px;margin-bottom:20px}
+.balcard .lbl{color:var(--muted);font-size:13px;margin-bottom:8px}
+.balcard .big{font-family:var(--sans);font-weight:800;font-size:2.6rem;letter-spacing:-.03em}
+.balcard .etb{color:var(--muted);font-size:.95rem;margin-top:4px}
+.balcard .row{display:flex;gap:12px;margin-top:22px;flex-wrap:wrap}
+.methods{display:flex;gap:10px;flex-wrap:wrap;margin:6px 0 4px}
+.method{flex:1;min-width:120px;border:1px solid var(--line-soft);border-radius:12px;padding:14px;text-align:center;cursor:pointer;font-family:var(--sans);font-weight:600;font-size:.9rem;transition:.2s}
+.method:hover,.method.on{border-color:var(--gold);background:rgba(232,176,75,.06);color:var(--gold)}
+
+/* mobile bottom tabs */
+.tabbar{display:none;position:fixed;bottom:0;left:0;right:0;z-index:55;background:rgba(16,14,11,.9);backdrop-filter:blur(14px);border-top:1px solid var(--line);padding:8px 6px calc(8px + env(safe-area-inset-bottom));justify-content:space-around}
+.tab{display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--muted);font-size:10px;font-weight:600;font-family:var(--sans);cursor:pointer;flex:1;padding:4px}
+.tab svg{width:22px;height:22px}
+.tab.on{color:var(--gold)}
+.tab.fab{margin-top:-24px}
+.tab.fab .fabin{width:50px;height:50px;border-radius:16px;background:linear-gradient(135deg,var(--gold-2),var(--gold-deep));display:grid;place-items:center;color:#1a1408;box-shadow:0 8px 22px -6px rgba(232,176,75,.6)}
+.tab.fab svg{width:26px;height:26px}
+
+/* toast */
+#toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(120px);z-index:200;background:var(--ink-3);border:1px solid var(--line);border-radius:13px;padding:13px 20px;font-size:.9rem;font-weight:500;box-shadow:0 12px 40px -10px rgba(0,0,0,.6);transition:transform .35s cubic-bezier(.2,.8,.2,1);max-width:90vw;display:flex;gap:10px;align-items:center}
+#toast.show{transform:translateX(-50%) translateY(0)}
+#toast .dotok{width:8px;height:8px;border-radius:50%;background:var(--green);flex:none}
+
+.rv{opacity:0;transform:translateY(24px);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1)}
+.rv.in{opacity:1;transform:none}
+.empty{text-align:center;padding:50px 20px;color:var(--muted)}
+.empty svg{width:40px;height:40px;color:var(--muted-2);margin-bottom:14px}
+
+@media(max-width:960px){
+  .mlinks{display:none}.login-link{display:none}
+  .burger{display:flex}
+  .app{grid-template-columns:1fr}
+  .side{display:none}
+  .main{padding:20px 18px 96px}
+  .tabbar{display:flex}
+  .stats{grid-template-columns:1fr 1fr}
+  .steps{grid-template-columns:1fr 1fr}.feat{grid-template-columns:1fr 1fr}
+}
+@media(max-width:620px){
+  .feat{grid-template-columns:1fr}.steps{grid-template-columns:1fr}
+  .grid2{grid-template-columns:1fr}
+  .splitrow{grid-template-columns:1fr 1fr;gap:8px}
+  .splitrow .xbtn{grid-column:2;justify-self:end}
+  section.sec{padding:60px 0}.hero{padding:60px 0 50px}
+  .apptop h1{font-size:1.4rem}
+  .balcard .big{font-size:2.1rem}
+}
+/* ===== mobile hardening: fit every phone, no overflow ===== */
+img,svg,table{max-width:100%}
+.ritem>*{min-width:0}
+@media(max-width:860px){ .mhead .lang{display:none} }
+@media(max-width:620px){
+  .wrap{padding:0 16px}
+  .mhead .mctrl{gap:8px}
+  .mhead .mctrl .btn{padding:8px 12px;font-size:12.5px}
+  .panelbox{overflow-x:auto;padding:18px}
+  th,td{white-space:nowrap;padding:11px 9px}
+  .apptop{flex-wrap:wrap}
+  .apptop .who{order:2}
+  .stat .v{font-size:1.5rem}
+  .balcard{padding:24px}.balcard .big{font-size:2rem}
+  .authcard{padding:30px 22px}
+  .cta-band{padding:44px 22px}
+}
+@media(max-width:400px){
+  .wrap{padding:0 14px}
+  .main{padding:18px 14px 96px}
+  .stats{gap:9px}.stat{padding:15px}.stat .v{font-size:1.35rem}
+  .brand{font-size:18px}.brand small{display:none}
+  .balcard .big{font-size:1.75rem}
+  .apptop h1{font-size:1.3rem}
+  .method{min-width:calc(50% - 5px)}
+  .hcta .btn,.hero-cta .btn{width:100%}
+  .wnav{flex-direction:column-reverse}.wnav .btn{width:100%}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="glow"></div><div class="grain"></div>
+<div id="root"></div>
+<div id="toast"><span class="dotok"></span><span id="toastmsg"></span></div>
+
+<script>
+/* ============================================================
+   ZEMA — in-browser domain engine (ports 1:1 to the NestJS API)
+   ============================================================ */
+const money = {
+  usd:c=>'$'+(c/100).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}),
+  etb:s=>(s/100).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})+' Br'
+};
+let _id=1; const uid=p=>p+'_'+(_id++);
+const DSPS=['Spotify','Apple Music','YouTube Music','TikTok','Boomplay','Audiomack','Deezer','Amazon Music'];
+
+const DB={users:[],payees:[],releases:[],tracks:[],splits:[],deliveries:[],
+  reports:[],lines:[],allocations:[],ledger:[],payouts:[],
+  counters:{isrc:0,upc:0},session:null,fx:158.5};
+
+/* ---- allocation: largest-remainder, no santim lost ---- */
+function allocate(revenueC, splits){
+  const raw=splits.map(s=>revenueC*s.percent/100);
+  const flo=raw.map(r=>Math.trunc(r));
+  let rem=revenueC-flo.reduce((a,b)=>a+b,0);
+  const ord=splits.map((s,i)=>({i,f:raw[i]-flo[i]})).sort((a,b)=>b.f-a.f||a.i-b.i);
+  const sign=rem>=0?1:-1;
+  for(let k=0;k<Math.abs(rem);k++) flo[ord[k%ord.length].i]+=sign;
+  return flo;
+}
+function balance(payeeId){
+  return DB.ledger.filter(l=>l.payee===payeeId)
+    .reduce((a,l)=>a+(l.type==='credit'?l.amt:-l.amt),0);
+}
+function credit(payee,amt,src,srcId){DB.ledger.push({id:uid('le'),payee,type:'credit',amt,ccy:'USD',src,srcId,at:Date.now()})}
+function debit(payee,amt,src,srcId){DB.ledger.push({id:uid('le'),payee,type:'debit',amt,ccy:'USD',src,srcId,at:Date.now()})}
+
+/* ---- identifiers ---- */
+function issueISRC(){DB.counters.isrc++;return'ET-ZMA-26-'+String(DB.counters.isrc).padStart(5,'0')}
+function issueUPC(){DB.counters.upc++;return'8'+String(600000000000+DB.counters.upc)}
+
+/* ---- validation engine (subset of the rules spec) ---- */
+function validate(rel){
+  const errs=[],warns=[]; const trks=DB.tracks.filter(t=>t.release===rel.id);
+  if(!rel.title)errs.push('Release title is required.');
+  if(!rel.genre)errs.push('Select a primary genre.');
+  if(!rel.language)errs.push('Set the release language.');
+  if(!rel.date)errs.push('Set a release date.');
+  if(!rel.artwork)errs.push('Cover artwork is required (min 3000×3000).');
+  if(!trks.length)errs.push('Add at least one track.');
+  trks.forEach(t=>{
+    if(!t.audio)errs.push('“'+t.title+'” has no audio file.');
+    const sp=DB.splits.filter(s=>s.track===t.id);
+    if(!sp.length)errs.push('“'+t.title+'” has no splits.');
+    else{const tot=sp.reduce((a,s)=>a+s.percent,0);
+      if(Math.abs(tot-100)>0.001)errs.push('“'+t.title+'” splits total '+tot+'%, must equal 100%.');}
+    if(t.audioFmt==='mp3')warns.push('“'+t.title+'” is MP3 — WAV/FLAC recommended.');
+  });
+  if(rel.date&&new Date(rel.date)-Date.now()<7*864e5&&new Date(rel.date)>=Date.now())
+    warns.push('Release in under 7 days — too late for editorial pitching.');
+  return{errs,warns};
+}
+
+/* ---- delivery simulation ---- */
+function submitRelease(rel){
+  rel.upc=issueUPC(); rel.status='delivering'; rel.submittedAt=Date.now();
+  DB.tracks.filter(t=>t.release===rel.id).forEach(t=>{t.isrc=issueISRC();t.status='delivered'});
+  const dsps=DSPS.slice(0,6);
+  dsps.forEach((d,i)=>{
+    const dv={id:uid('dl'),release:rel.id,dsp:d,status:'queued'};DB.deliveries.push(dv);
+    setTimeout(()=>{dv.status='live';
+      if(DB.deliveries.filter(x=>x.release===rel.id).every(x=>x.status==='live')){
+        rel.status='live';DB.tracks.filter(t=>t.release===rel.id).forEach(t=>t.status='live');
+        toast('“'+rel.title+'” is now live on all stores');
+      }
+      if(location.hash.includes(rel.id)||location.hash.includes('music'))render();
+    },1400+i*700);
+  });
+}
+
+/* ---- royalty import: match by ISRC → allocate → ledger ---- */
+function importReport(){
+  const live=DB.tracks.filter(t=>t.status==='live'&&t.isrc);
+  if(!live.length){toast('No live tracks yet — release music first');return null;}
+  let gross=0,lineCount=0; const rid=uid('rp');
+  live.forEach(t=>{
+    const sp=DB.splits.filter(s=>s.track===t.id);
+    const nd=2+Math.floor(Math.random()*3);
+    for(let i=0;i<nd;i++){
+      const dsp=DSPS[Math.floor(Math.random()*DSPS.length)];
+      const streams=400+Math.floor(Math.random()*7000);
+      const rev=Math.round(streams*(0.0031+Math.random()*0.0012)*100); // USD cents
+      gross+=rev;lineCount++;
+      const ln={id:uid('ln'),report:rid,isrc:t.isrc,dsp,streams,rev,track:t.id};DB.lines.push(ln);
+      const shares=allocate(rev,sp);
+      sp.forEach((s,k)=>{DB.allocations.push({id:uid('al'),line:ln.id,payee:s.payee,amt:shares[k]});
+        if(shares[k]>=0)credit(s.payee,shares[k],'royalty',ln.id);else debit(s.payee,-shares[k],'royalty',ln.id);});
+    }
+  });
+  DB.reports.unshift({id:rid,gross,lineCount,at:Date.now(),period:new Date().toLocaleDateString('en-US',{month:'short',year:'numeric'})});
+  return{gross,lineCount};
+}
+
+/* ---- payouts (FX at payout, reserve-on-create) ---- */
+function requestPayout(amtC,method){
+  const me=DB.session.payee, avail=balance(me);
+  if(amtC>avail)return{err:'Amount exceeds available balance.'};
+  if(amtC<=0)return{err:'Enter an amount above zero.'};
+  const fx=DB.fx, etb=Math.round(amtC*fx);
+  const p={id:uid('po'),payee:me,usd:amtC,fx,etb,method,status:'paid',at:Date.now(),ref:'TX'+Math.random().toString(36).slice(2,10).toUpperCase()};
+  DB.payouts.unshift(p); debit(me,amtC,'payout',p.id);
+  return{ok:p};
+}
+
+/* ---- auth ---- */
+function signup(name,email){
+  const py={id:uid('py'),name,role:'You'};DB.payees.push(py);
+  const u={id:uid('u'),name,email,payee:py.id};DB.users.push(u);DB.session=u;return u;
+}
+function loginDemo(){DB.session=DB.users[0];}
+function logout(){DB.session=null;location.hash='#/';}
+
+/* ---- seed demo account ---- */
+function seed(){
+  const py={id:uid('py'),name:'Abel',role:'You'};DB.payees.push(py);
+  const p2={id:uid('py'),name:'Selam',role:'Featured'};DB.payees.push(p2);
+  const p3={id:uid('py'),name:'Dawit',role:'Producer'};DB.payees.push(p3);
+  const u={id:uid('u'),name:'Abel Bekele',email:'abel@demo.et',payee:py.id};DB.users.push(u);
+  // one live release with history
+  const r={id:uid('rl'),owner:u.id,title:'Tizita',artist:'Abel',type:'Single',genre:'Ethiopian Traditional',language:'Amharic',date:'2026-05-01',artwork:true,status:'live',upc:issueUPC()};
+  DB.releases.push(r);
+  const t={id:uid('tr'),release:r.id,title:'Tizita (feat. Selam)',audio:true,audioFmt:'wav',explicit:false,isrc:issueISRC(),status:'live'};
+  DB.tracks.push(t);
+  DB.splits.push({id:uid('sp'),track:t.id,payee:py.id,role:'Primary artist',percent:60});
+  DB.splits.push({id:uid('sp'),track:t.id,payee:p2.id,role:'Featured',percent:25});
+  DB.splits.push({id:uid('sp'),track:t.id,payee:p3.id,role:'Producer',percent:15});
+  DSPS.slice(0,6).forEach(d=>DB.deliveries.push({id:uid('dl'),release:r.id,dsp:d,status:'live'}));
+  // seed earnings
+  for(let i=0;i<24;i++){const rev=Math.round((300+Math.random()*5000)*(0.0032+Math.random()*0.001)*100);
+    const sh=allocate(rev,DB.splits.filter(s=>s.track===t.id));
+    DB.splits.filter(s=>s.track===t.id).forEach((s,k)=>credit(s.payee,sh[k],'royalty','seed'));}
+  DB.reports.unshift({id:uid('rp'),gross:balance(py.id)+balance(p2.id)+balance(p3.id),lineCount:24,at:Date.now(),period:'May 2026'});
+}
+seed();
+</script>
+
+<script>
+/* ============================================================
+   ROUTER + VIEWS
+   ============================================================ */
+const root=document.getElementById('root');
+const I18=[['nav_dist','Distribution','ስርጭት'],['nav_pub','Publishing','ኅትመት'],['nav_price','Pricing','ዋጋ'],['nav_co','Company','ኩባንያ']];
+let LANG='en';
+
+function toast(msg){const t=document.getElementById('toast');document.getElementById('toastmsg').textContent=msg;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('show'),3200);}
+function go(h){location.hash=h}
+function seg(){return location.hash.replace(/^#\/?/,'').split('/').filter(Boolean)}
+function svg(p){return'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+p+'</svg>'}
+const ICON={
+  home:svg('<path d="M3 10l9-7 9 7v10a1 1 0 01-1 1h-5v-7h-6v7H4a1 1 0 01-1-1z"/>'),
+  music:svg('<path d="M9 18V5l10-2v13"/><circle cx="6.5" cy="18" r="2.6"/><circle cx="16.5" cy="16" r="2.6"/>'),
+  money:svg('<path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>'),
+  chart:svg('<path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/>'),
+  cog:svg('<circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 00-.1-1l2-1.6-2-3.4-2.4 1a7 7 0 00-1.7-1l-.4-2.5h-4l-.4 2.5a7 7 0 00-1.7 1l-2.4-1-2 3.4 2 1.6a7 7 0 000 2l-2 1.6 2 3.4 2.4-1a7 7 0 001.7 1l.4 2.5h4l.4-2.5a7 7 0 001.7-1l2.4 1 2-3.4-2-1.6a7 7 0 00.1-1z"/>'),
+  plus:svg('<path d="M12 5v14M5 12h14"/>'),
+  globe:svg('<circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 010 20 15 15 0 010-20"/>'),
+  users:svg('<circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 014-4h4a4 4 0 014 4v2M16 3.1a4 4 0 010 7.8"/>'),
+  shield:svg('<path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6z"/><path d="M9 12l2 2 4-4"/>'),
+  check:svg('<path d="M20 6L9 17l-5-5"/>'),
+  warn:svg('<path d="M12 9v4M12 17h.01M10.3 3.9L2 18a2 2 0 001.7 3h16.6A2 2 0 0022 18L13.7 3.9a2 2 0 00-3.4 0z"/>'),
+  x:svg('<path d="M18 6L6 18M6 6l12 12"/>')
+};
+
+/* ---------- MARKETING ---------- */
+function header(){
+  const links=I18.map(l=>`<a class="i18" data-k="${l[0]}" href="#/pricing">${LANG==='am'?l[2]:l[1]}</a>`).join('');
+  return `<header class="mhead"><div class="wrap"><nav class="mnav">
+    <a href="#/" class="brand">${brandMark()}<span>Zema</span> <small>ዜማ</small></a>
+    <div class="mlinks">${links}</div>
+    <div class="mctrl">
+      <div class="lang"><button class="${LANG==='en'?'on':''}" onclick="setLang('en')">EN</button><button class="${LANG==='am'?'on':''}" onclick="setLang('am')">አማ</button></div>
+      <span class="login-link" onclick="go('#/login')">${LANG==='am'?'ግባ':'Log in'}</span>
+      <a class="btn btn-gold" href="#/signup">${LANG==='am'?'ተመዝገብ':'Create account'}</a>
+      <button class="burger" onclick="toggleDrawer()"><span></span><span></span><span></span></button>
+    </div></nav></div></header>
+    <div class="drawer" id="drawer"><div class="scrim" onclick="toggleDrawer()"></div>
+      <div class="panel"><button class="dclose" onclick="toggleDrawer()">&times;</button>
+      ${I18.map(l=>`<a onclick="toggleDrawer()" href="#/pricing">${LANG==='am'?l[2]:l[1]}</a>`).join('')}
+      <a onclick="toggleDrawer()" href="#/login">${LANG==='am'?'ግባ':'Log in'}</a>
+      <a class="btn btn-gold" href="#/signup" onclick="toggleDrawer()">${LANG==='am'?'ተመዝገብ':'Create account'}</a>
+      <div class="lang" style="margin-top:20px;align-self:flex-start"><button class="${LANG==='en'?'on':''}" onclick="setLang('en')">EN</button><button class="${LANG==='am'?'on':''}" onclick="setLang('am')">አማ</button></div>
+      </div></div>`;
+}
+function brandMark(){return'<svg viewBox="0 0 24 24" fill="none"><path d="M9 18V5l10-2v13" stroke="url(#bg)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="6.5" cy="18" r="2.6" stroke="url(#bg)" stroke-width="2"/><circle cx="16.5" cy="16" r="2.6" stroke="url(#bg)" stroke-width="2"/><defs><linearGradient id="bg" x1="0" y1="0" x2="24" y2="24"><stop stop-color="#f5d489"/><stop offset="1" stop-color="#c68f2f"/></linearGradient></defs></svg>'}
+function toggleDrawer(){document.getElementById('drawer').classList.toggle('open');document.querySelector('.burger').classList.toggle('on')}
+function setLang(l){LANG=l;render()}
+const T=(en,am)=>LANG==='am'?am:en;
+
+function landing(){
+  return header()+`<main>
+  <section class="hero"><div class="wrap">
+    <div class="badge rv"><span class="dot"></span>${T('Built in Addis Ababa for African artists','ለአፍሪካ አርቲስቶች በአዲስ አበባ የተሰራ')}</div>
+    <h1 class="rv i18">${T('Your music, everywhere.','ሙዚቃህ በሁሉም ቦታ።')} <span class="grad">${T('Royalties, home.','ገቢህ ወደ አገርህ።')}</span></h1>
+    <p class="rv i18">${T('Distribute Ethiopian music to Spotify, Apple Music and 150+ platforms. Collect royalties. Get paid in birr — Telebirr, Chapa or bank.','የኢትዮጵያን ሙዚቃ ወደ Spotify፣ Apple Music እና 150+ መድረኮች አድርስ። ሮያሊቲህን ሰብስብ። በብር ተከፈል።')}</p>
+    <div class="hcta rv"><a class="btn btn-gold" href="#/signup">${T('Get early access','ቀድመህ ተቀላቀል')}</a><a class="btn btn-ghost" href="#how">${T('See how it works','እንዴት እንደሚሰራ')}</a></div>
+    <div class="wave rv"><svg viewBox="0 0 740 90" preserveAspectRatio="none"><g id="bars" stroke="url(#wg)" stroke-width="3" stroke-linecap="round"></g><defs><linearGradient id="wg" x1="0" x2="740"><stop stop-color="#c68f2f" stop-opacity=".3"/><stop offset=".5" stop-color="#f5d489"/><stop offset="1" stop-color="#c68f2f" stop-opacity=".3"/></linearGradient></defs></svg></div>
+  </div></section>
+  <div class="dsp"><div class="wrap"><div class="lbl">${T('Delivered to the platforms that matter','ለሚያስፈልጉ መድረኮች ይላካል')}</div><div class="dsprow">${DSPS.concat(['Tidal','Anghami']).map(d=>`<span class="pill">${d}</span>`).join('')}</div></div></div>
+  <section class="sec" id="how"><div class="wrap"><div class="sechead rv"><div class="eyebrow">${T('How it works','እንዴት እንደሚሰራ')}</div><h2 class="i18">${T('From your studio to the world in four steps','ከስቱዲዮህ ወደ ዓለም በአራት ደረጃ')}</h2></div>
+    <div class="steps">${[
+      [T('Upload','ጫን'),T('Add audio and cover art. We validate so DSPs accept it.','ድምጽና ሽፋን ጨምር። መድረኮች እንዳይመልሱት እናረጋግጣለን።')],
+      [T('We distribute','እናሰራጫለን'),T('ISRC and UPC included. Live on every major platform.','ISRC እና UPC ተካቷል። በሁሉም መድረክ ይወጣል።')],
+      [T('Royalties come in','ገቢ ይገባል'),T('We collect what you earn from every stream, in one place.','ከእያንዳንዱ ስትሪም ገቢህን በአንድ ቦታ እንሰበስባለን።')],
+      [T('Get paid in birr','በብር ተከፈል'),T('Cash out to Telebirr, Chapa or bank. Splits pay collaborators.','ወደ ቴሌብር፣ ቻፓ ወይም ባንክ አውጣ። ክፍፍል አጋሮችን ይከፍላል።')]
+    ].map((s,i)=>`<div class="step rv"><div class="n">${i+1}</div><h3 class="i18">${s[0]}</h3><p class="i18">${s[1]}</p></div>`).join('')}</div></div></section>
+  <section class="sec"><div class="wrap"><div class="sechead rv"><div class="eyebrow">${T('Why Zema','ለምን ዜማ')}</div><h2 class="i18">${T('Everything an African artist actually needs','አፍሪካዊ አርቲስት የሚያስፈልገው ሁሉ')}</h2></div>
+    <div class="feat">${[
+      [ICON.globe,T('Global reach','ዓለም አቀፍ ተደራሽነት'),T('150+ stores — Spotify, Apple, YouTube, TikTok, Boomplay and more.','150+ መደብሮች — Spotify፣ Apple፣ YouTube፣ TikTok እና ሌሎችም።')],
+      [ICON.money,T('Paid in birr','በብር መከፈል'),T('Withdraw to Telebirr, Chapa, CBE Birr or bank. No foreign account.','ወደ ቴሌብር፣ ቻፓ ወይም ባንክ ውሰድ። የውጭ አካውንት አያስፈልግም።')],
+      [ICON.users,T('Fair splits','ፍትሃዊ ክፍፍል'),T('Set percentages for writers, producers, features. Auto-paid.','ለጸሐፊዎችና ፕሮዲውሰሮች መቶኛ አስቀምጥ። በራሱ ይከፈላል።')],
+      [ICON.chart,T('Real analytics','ትክክለኛ ትንታኔ'),T('Streams, earnings and where fans are — by platform and country.','ስትሪም፣ ገቢና አድናቂዎች የት እንዳሉ — በመድረክና በአገር።')],
+      [ICON.shield,T('You keep your rights','መብትህ ያንተ'),T('Masters stay yours. Transparent contracts, no lock-in.','ማስተርህ ያንተ ነው። ግልጽ ውል፣ ማሰሪያ የለም።')],
+      [ICON.globe,T('In your language','በቋንቋህ'),T('Amharic, Afaan Oromo, Tigrinya, Somali and more.','አማርኛ፣ አፋን ኦሮሞ፣ ትግርኛ፣ ሶማልኛ እና ሌሎችም።')]
+    ].map(f=>`<div class="fcard rv"><div class="ic">${f[0]}</div><h3 class="i18">${f[1]}</h3><p class="i18">${f[2]}</p></div>`).join('')}</div></div></section>
+  <section class="sec"><div class="wrap"><div class="cta-band rv"><div class="eyebrow">${T('Early access','ቅድመ ተደራሽነት')}</div><h2 class="i18">${T('Ready to release to the world?','ወደ ዓለም ለመልቀቅ ዝግጁ ነህ?')}</h2><p class="i18">${T('Create your account and try the full flow — build a release, set splits, watch it deliver.','አካውንትህን ፍጠር እና ሙሉ ሂደቱን ሞክር።')}</p><a class="btn btn-gold" href="#/signup" style="padding:14px 28px">${T('Create your account','አካውንት ፍጠር')}</a></div></div></section>
+  <footer><div class="wrap"><div class="ftop"><div><div class="brand">${brandMark()}<span>Zema</span> <small>ዜማ</small></div><p class="flead i18">${T('The music distribution and royalty rail for Ethiopia and Africa.','የኢትዮጵያና አፍሪካ የሙዚቃ ስርጭትና ሮያሊቲ መስመር።')}</p></div>
+    <div class="fcols"><div class="fcol"><h4>Product</h4><a href="#how">How it works</a><a href="#/pricing">Pricing</a><a href="#/signup">Sign up</a></div><div class="fcol"><h4>Company</h4><a href="#">About</a><a href="#">Contact</a></div><div class="fcol"><h4>Legal</h4><a href="#">Privacy</a><a href="#">Terms</a></div></div></div>
+    <div class="fbot"><span>© 2026 Zema · Hisab Technologies, Addis Ababa</span><span>Made in Ethiopia 🇪🇹</span></div></div></footer></main>`;
+}
+
+/* ---------- AUTH ---------- */
+function login(){return header()+`<div class="auth"><div class="authcard rv">
+  <h2>Welcome back</h2><p class="sub">Log in to your Zema dashboard.</p>
+  <div class="field"><label>Email</label><input id="le" type="email" value="abel@demo.et"></div>
+  <div class="field"><label>Password</label><input id="lp" type="password" value="••••••••"></div>
+  <button class="btn btn-gold" onclick="doLogin()">Log in</button>
+  <div class="demo-tip">Demo account is pre-filled — just tap <b>Log in</b> to explore with sample data.</div>
+  <div class="swap">New here? <b onclick="go('#/signup')">Create an account</b></div>
+</div></div>`;}
+function doLogin(){loginDemo();toast('Welcome back, '+DB.session.name.split(' ')[0]);go('#/app')}
+function signupView(){return header()+`<div class="auth"><div class="authcard rv">
+  <h2>Create your account</h2><p class="sub">Start distributing in minutes.</p>
+  <div class="field"><label>Artist / name</label><input id="sn" placeholder="Your name"></div>
+  <div class="field"><label>Email</label><input id="se" type="email" placeholder="you@email.com"></div>
+  <div class="field"><label>Password</label><input id="sp" type="password" placeholder="Create a password"></div>
+  <button class="btn btn-gold" onclick="doSignup()">Create account</button>
+  <div class="swap">Already have one? <b onclick="go('#/login')">Log in</b></div>
+</div></div>`;}
+function doSignup(){const n=document.getElementById('sn').value.trim()||'New Artist',e=document.getElementById('se').value.trim()||'artist@zema.et';signup(n,e);toast('Account created — welcome to Zema');go('#/app')}
+
+/* ---------- APP SHELL ---------- */
+function shell(active,inner){
+  const items=[['','Dashboard',ICON.home],['music','My Music',ICON.music],['royalties','Royalties',ICON.chart],['wallet','Wallet',ICON.money],['settings','Settings',ICON.cog]];
+  const side=`<aside class="side"><a href="#/app" class="brand">${brandMark()}<span>Zema</span></a>
+    <button class="btn btn-gold newbtn" onclick="go('#/app/release/new')">${ICON.plus} New Release</button>
+    <div style="height:10px"></div>
+    ${items.map(it=>`<div class="snav ${active===it[0]?'on':''}" onclick="go('#/app${it[0]?'/'+it[0]:''}')">${it[2]}<span>${it[1]}</span></div>`).join('')}
+    <div class="foot">Signed in as ${DB.session.name}<br><span class="logout" onclick="logout()">Log out</span></div></aside>`;
+  const tabs=[['','Home',ICON.home],['music','Music',ICON.music],['new','',ICON.plus],['wallet','Money',ICON.money],['settings','More',ICON.cog]];
+  const tabbar=`<div class="tabbar">${tabs.map(t=>t[0]==='new'
+    ?`<div class="tab fab" onclick="go('#/app/release/new')"><div class="fabin">${ICON.plus}</div></div>`
+    :`<div class="tab ${active===t[0]?'on':''}" onclick="go('#/app${t[0]?'/'+t[0]:''}')">${t[2]}<span>${t[1]}</span></div>`).join('')}</div>`;
+  return `<div class="app">${side}<main class="main">${inner}</main></div>${tabbar}`;
+}
+function apptop(title){return`<div class="apptop"><h1>${title}</h1><div class="who"><span>${DB.session.name}</span><div class="avatar">${DB.session.name[0]}</div></div></div>`}
+
+/* ---------- DASHBOARD ---------- */
+function dashboard(){
+  const me=DB.session.payee, bal=balance(me);
+  const myRel=DB.releases.filter(r=>r.owner===DB.session.id);
+  const streams=DB.lines.reduce((a,l)=>a+l.streams,0)+18420;
+  const totalEarn=DB.ledger.filter(l=>l.payee===me&&l.type==='credit').reduce((a,l)=>a+l.amt,0);
+  const byDsp={};DB.deliveries.filter(d=>myRel.some(r=>r.id===d.release)).forEach(()=>{});
+  const chartVals=[62,48,78,55,90,70];const chartLbl=['Spotify','Apple','YouTube','Boomplay','TikTok','Amazon'];
+  const inner=apptop('Dashboard')+`
+  <div class="stats">
+    <div class="stat rv"><div class="k">${ICON.music}Total streams</div><div class="v" data-count="${streams}">0</div><div class="d">↑ live catalog</div></div>
+    <div class="stat rv"><div class="k">${ICON.chart}Total earned</div><div class="v" data-money="${totalEarn}">$0</div><div class="d">all time</div></div>
+    <div class="stat rv"><div class="k">${ICON.money}Available</div><div class="v" data-money="${bal}">$0</div><div class="d">${money.etb(Math.round(bal*DB.fx))}</div></div>
+    <div class="stat rv"><div class="k">${ICON.globe}Releases live</div><div class="v" data-count="${myRel.filter(r=>r.status==='live').length}">0</div><div class="d">${myRel.length} total</div></div>
+  </div>
+  <div class="panelbox rv"><div class="ph"><div><h3>Earnings by platform</h3><p>Last statement · illustrative</p></div></div>
+    <div class="chart">${chartVals.map((v,i)=>`<div class="col"><div class="bar" data-h="${v}" style="height:0"></div><div class="cl">${chartLbl[i]}</div></div>`).join('')}</div></div>
+  <div class="panelbox rv"><div class="ph"><div><h3>Recent releases</h3></div><button class="btn btn-ghost btn-sm" onclick="go('#/app/music')">View all</button></div>
+    <div class="rlist">${myRel.length?myRel.slice(0,3).map(r=>releaseItem(r)).join(''):emptyRel()}</div></div>`;
+  return shell('',inner);
+}
+function statusBadge(s){const m={live:['b-live','Live'],delivering:['b-deliv','Delivering'],draft:['b-draft','Draft'],submitted:['b-review','In review'],taken_down:['b-down','Taken down']};const x=m[s]||['b-draft',s];return`<span class="badge2 ${x[0]}">${x[1]}</span>`}
+function releaseItem(r){const nt=DB.tracks.filter(t=>t.release===r.id).length;
+  return`<div class="ritem" onclick="go('#/app/release/${r.id}')"><div class="art">${ICON.music}</div>
+    <div class="meta"><b>${r.title}</b><span>${r.type} · ${nt} track${nt!==1?'s':''} · ${r.artist||DB.session.name}</span></div>${statusBadge(r.status)}</div>`}
+function emptyRel(){return`<div class="empty">${ICON.music}<p>No releases yet.</p><button class="btn btn-gold btn-sm" style="margin-top:14px" onclick="go('#/app/release/new')">Create your first release</button></div>`}
+
+/* ---------- MY MUSIC ---------- */
+function music(){
+  const myRel=DB.releases.filter(r=>r.owner===DB.session.id);
+  const inner=apptop('My Music')+`<div class="panelbox rv"><div class="ph"><div><h3>${myRel.length} release${myRel.length!==1?'s':''}</h3></div><button class="btn btn-gold btn-sm" onclick="go('#/app/release/new')">${ICON.plus} New</button></div>
+    <div class="rlist">${myRel.length?myRel.map(r=>releaseItem(r)).join(''):emptyRel()}</div></div>`;
+  return shell('music',inner);
+}
+
+/* ---------- RELEASE DETAIL ---------- */
+function releaseDetail(id){
+  const r=DB.releases.find(x=>x.id===id);if(!r)return shell('music','<div class="empty">Not found.</div>');
+  const trks=DB.tracks.filter(t=>t.release===r.id);
+  const dv=DB.deliveries.filter(d=>d.release===r.id);
+  const inner=`<div class="apptop"><h1>${r.title}</h1>${statusBadge(r.status)}</div>
+  <div class="panelbox rv"><div class="grid2">
+    <div><div class="k" style="color:var(--muted);font-size:12px">Type</div><div style="font-family:var(--sans);font-weight:600">${r.type}</div>
+      <div class="k" style="color:var(--muted);font-size:12px;margin-top:14px">UPC</div><div class="mono">${r.upc||'—'}</div></div>
+    <div><div class="k" style="color:var(--muted);font-size:12px">Genre</div><div style="font-family:var(--sans);font-weight:600">${r.genre}</div>
+      <div class="k" style="color:var(--muted);font-size:12px;margin-top:14px">Release date</div><div style="font-family:var(--sans);font-weight:600">${r.date}</div></div>
+  </div></div>
+  <div class="panelbox rv"><h3 style="margin-bottom:16px">Tracks & splits</h3>
+    ${trks.map(t=>{const sp=DB.splits.filter(s=>s.track===t.id);return`
+      <div style="border:1px solid var(--line-soft);border-radius:13px;padding:16px;margin-bottom:12px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <div><b style="font-family:var(--sans)">${t.title}</b><div style="color:var(--muted);font-size:.8rem" class="mono">ISRC ${t.isrc||'— (assigned at submit)'}</div></div>${statusBadge(t.status)}</div>
+        ${sp.map(s=>{const py=DB.payees.find(p=>p.id===s.payee);return`<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><div class="avatar" style="width:26px;height:26px;font-size:11px">${py.name[0]}</div><span style="flex:1;font-size:.9rem">${py.name} <span style="color:var(--muted-2)">· ${s.role}</span></span><div class="bar" style="flex:1;max-width:160px;height:6px;border-radius:4px;background:rgba(255,255,255,.06);overflow:hidden"><i style="display:block;height:100%;width:${s.percent}%;background:linear-gradient(90deg,var(--gold),var(--gold-deep))"></i></div><b style="font-family:var(--sans);min-width:42px;text-align:right">${s.percent}%</b></div>`}).join('')}
+      </div>`}).join('')}</div>
+  <div class="panelbox rv"><h3 style="margin-bottom:16px">Delivery status</h3>
+    <div class="dgrid">${dv.map(d=>`<div class="dcell"><span>${d.dsp}</span><span style="display:flex;align-items:center;gap:7px;color:${d.status==='live'?'var(--green)':'var(--blue)'}">${d.status==='live'?'Live':'Sending'}<span class="dstatus ${d.status==='live'?'ds-live':'ds-q'}"></span></span></div>`).join('')||'<p style="color:var(--muted)">Not submitted yet.</p>'}</div></div>
+  <button class="btn btn-ghost" onclick="go('#/app/music')">← Back to catalog</button>`;
+  return shell('music',inner);
+}
+
+/* ---------- NEW RELEASE WIZARD ---------- */
+let WZ=null;
+function wizardInit(){WZ={step:0,rel:{id:uid('rl'),owner:DB.session.id,title:'',type:'Single',artist:DB.session.name,genre:'',language:'',date:'',artwork:false,status:'draft'},tracks:[],splits:{}}}
+function newRelease(){
+  if(!WZ)wizardInit();
+  const steps=['Details','Tracks','Splits','Review'];
+  const bar=`<div class="wsteps">${steps.map((s,i)=>`<div class="wstep ${i===WZ.step?'on':''} ${i<WZ.step?'done':''}"><span class="num">${i<WZ.step?'✓':i+1}</span>${s}</div>`).join('')}</div>`;
+  let body='';
+  if(WZ.step===0){const r=WZ.rel;body=`<div class="panelbox">
+    <div class="grid2"><div class="field"><label>Release title</label><input id="w_title" value="${r.title}" placeholder="e.g. Tizita"></div>
+    <div class="field"><label>Type</label><select id="w_type">${['Single','EP','Album'].map(o=>`<option ${r.type===o?'selected':''}>${o}</option>`).join('')}</select></div></div>
+    <div class="grid2"><div class="field"><label>Primary artist</label><input id="w_artist" value="${r.artist}"></div>
+    <div class="field"><label>Genre</label><select id="w_genre"><option value="">Select…</option>${['Ethiopian Traditional','Gospel','Afrobeats','Hip Hop','Jazz','Pop','Amapiano','Orthodox'].map(o=>`<option ${r.genre===o?'selected':''}>${o}</option>`).join('')}</select></div></div>
+    <div class="grid2"><div class="field"><label>Language</label><select id="w_lang"><option value="">Select…</option>${['Amharic','Afaan Oromo','Tigrinya','Somali','English'].map(o=>`<option ${r.language===o?'selected':''}>${o}</option>`).join('')}</select></div>
+    <div class="field"><label>Release date</label><input id="w_date" type="date" value="${r.date}"></div></div>
+    <div class="field"><label>Cover artwork (min 3000×3000)</label><div class="upload ${r.artwork?'filled':''}" onclick="wzArt()">${r.artwork?'✓ artwork.jpg · 3000×3000':'Tap to upload cover art'}</div></div>
+  </div>`;}
+  if(WZ.step===1){body=`<div class="panelbox"><div class="ph"><h3>Tracks</h3><button class="btn btn-ghost btn-sm" onclick="wzAddTrack()">${ICON.plus} Add track</button></div>
+    ${WZ.tracks.length?WZ.tracks.map((t,i)=>`<div style="display:flex;align-items:center;gap:12px;border:1px solid var(--line-soft);border-radius:12px;padding:12px;margin-bottom:10px">
+      <div class="art" style="width:38px;height:38px">${ICON.music}</div>
+      <input value="${t.title}" oninput="WZ.tracks[${i}].title=this.value" placeholder="Track title" style="flex:1;background:rgba(0,0,0,.3);border:1px solid var(--line-soft);border-radius:9px;padding:9px 12px;color:var(--text)">
+      <div class="upload ${t.audio?'filled':''}" style="padding:9px 14px;font-size:.8rem" onclick="WZ.tracks[${i}].audio=true;WZ.tracks[${i}].audioFmt='wav';render()">${t.audio?'✓ WAV':'Upload audio'}</div>
+      <button class="xbtn" onclick="WZ.tracks.splice(${i},1);render()">×</button></div>`).join(''):'<div class="empty" style="padding:30px">'+ICON.music+'<p>No tracks yet. Add your first.</p></div>'}
+  </div>`;}
+  if(WZ.step===2){body=WZ.tracks.map((t,ti)=>{
+    if(!WZ.splits[ti])WZ.splits[ti]=[{name:DB.session.name,role:'Primary artist',percent:100}];
+    const rows=WZ.splits[ti];const tot=rows.reduce((a,s)=>a+(+s.percent||0),0);
+    return`<div class="panelbox"><h3 style="margin-bottom:6px">${t.title||'Track '+(ti+1)}</h3><p style="color:var(--muted);font-size:.85rem;margin-bottom:16px">Recording splits — must total 100%.</p>
+    ${rows.map((s,si)=>`<div class="splitrow">
+      <input value="${s.name}" oninput="WZ.splits[${ti}][${si}].name=this.value" placeholder="Name">
+      <select onchange="WZ.splits[${ti}][${si}].role=this.value">${['Primary artist','Featured','Producer','Writer','Composer'].map(o=>`<option ${s.role===o?'selected':''}>${o}</option>`).join('')}</select>
+      <input type="number" value="${s.percent}" oninput="WZ.splits[${ti}][${si}].percent=+this.value;wzSum(${ti})" placeholder="%">
+      <button class="xbtn" onclick="WZ.splits[${ti}].splice(${si},1);render()">×</button></div>`).join('')}
+    <button class="btn btn-ghost btn-sm" onclick="WZ.splits[${ti}].push({name:'',role:'Producer',percent:0});render()" style="margin-top:6px">${ICON.plus} Add collaborator</button>
+    <div class="sumbar ${Math.abs(tot-100)<0.001?'ok':'bad'}" id="sum_${ti}">Total <span>${tot}%</span> ${Math.abs(tot-100)<0.001?ICON.check:'· needs 100%'}</div>
+    </div>`}).join('')||'<div class="panelbox"><div class="empty">Add tracks first.</div></div>';}
+  if(WZ.step===3){
+    // commit to a temp release object for validation
+    const r={...WZ.rel};const tempTracks=WZ.tracks.map((t,i)=>({...t,release:r.id,id:'tmp'+i}));
+    // build splits check inline
+    const errs=[],warns=[];
+    if(!r.title)errs.push('Release title is required.');
+    if(!r.genre)errs.push('Select a primary genre.');
+    if(!r.language)errs.push('Set the release language.');
+    if(!r.date)errs.push('Set a release date.');
+    if(!r.artwork)errs.push('Cover artwork is required (min 3000×3000).');
+    if(!WZ.tracks.length)errs.push('Add at least one track.');
+    WZ.tracks.forEach((t,i)=>{if(!t.title)errs.push('Track '+(i+1)+' needs a title.');
+      if(!t.audio)errs.push('“'+(t.title||'Track '+(i+1))+'” has no audio.');
+      const sp=WZ.splits[i]||[];if(!sp.length)errs.push('“'+(t.title||'Track '+(i+1))+'” has no splits.');
+      else{const tot=sp.reduce((a,s)=>a+(+s.percent||0),0);if(Math.abs(tot-100)>0.001)errs.push('“'+(t.title||'Track '+(i+1))+'” splits total '+tot+'%, must equal 100%.');}
+      if(t.audioFmt==='mp3')warns.push('“'+t.title+'” is MP3 — WAV/FLAC recommended.');});
+    WZ._valid=errs.length===0;
+    body=`<div class="panelbox"><h3 style="margin-bottom:16px">Review & submit</h3>
+      <table><tr><th>Title</th><td>${r.title||'—'}</td></tr><tr><th>Type</th><td>${r.type}</td></tr><tr><th>Artist</th><td>${r.artist}</td></tr><tr><th>Genre</th><td>${r.genre||'—'}</td></tr><tr><th>Language</th><td>${r.language||'—'}</td></tr><tr><th>Date</th><td>${r.date||'—'}</td></tr><tr><th>Tracks</th><td>${WZ.tracks.length}</td></tr></table></div>
+    <div class="panelbox"><h3 style="margin-bottom:14px">Validation</h3>
+      ${errs.map(e=>`<div class="issue err">${ICON.warn}<span>${e}</span></div>`).join('')}
+      ${warns.map(w=>`<div class="issue warn">${ICON.warn}<span>${w}</span></div>`).join('')}
+      ${errs.length===0?`<div class="issue warn" style="background:rgba(94,194,127,.08);border-color:rgba(94,194,127,.3);color:#9fe0b6">${ICON.check}<span>All checks passed. Ready to distribute.</span></div>`:''}
+    </div>`;}
+  const nav=`<div class="wnav">
+    <button class="btn btn-ghost" onclick="wzBack()">${WZ.step===0?'Cancel':'← Back'}</button>
+    ${WZ.step<3?`<button class="btn btn-gold" onclick="wzNext()">Continue →</button>`:`<button class="btn btn-gold" onclick="wzSubmit()" ${WZ._valid?'':'disabled'}>Submit & distribute</button>`}</div>`;
+  return shell('',`${apptop('New Release')}${bar}${body}${nav}`);
+}
+function wzArt(){WZ.rel.artwork=true;render()}
+function wzAddTrack(){WZ.tracks.push({title:'',audio:false,audioFmt:'',status:'draft'});render()}
+function wzSum(ti){const rows=WZ.splits[ti];const tot=rows.reduce((a,s)=>a+(+s.percent||0),0);const el=document.getElementById('sum_'+ti);if(el){el.className='sumbar '+(Math.abs(tot-100)<0.001?'ok':'bad');el.innerHTML='Total <span>'+tot+'%</span> '+(Math.abs(tot-100)<0.001?ICON.check:'· needs 100%')}}
+function wzSaveStep(){if(WZ.step===0){const g=id=>document.getElementById(id);WZ.rel.title=g('w_title').value;WZ.rel.type=g('w_type').value;WZ.rel.artist=g('w_artist').value;WZ.rel.genre=g('w_genre').value;WZ.rel.language=g('w_lang').value;WZ.rel.date=g('w_date').value;}}
+function wzNext(){wzSaveStep();WZ.step++;render()}
+function wzBack(){if(WZ.step===0){WZ=null;go('#/app')}else{WZ.step--;render()}}
+function wzSubmit(){
+  const r=WZ.rel;DB.releases.push(r);
+  WZ.tracks.forEach((t,i)=>{const tr={id:uid('tr'),release:r.id,title:t.title,audio:t.audio,audioFmt:t.audioFmt||'wav',status:'draft'};DB.tracks.push(tr);
+    (WZ.splits[i]||[]).forEach(s=>{let py=DB.payees.find(p=>p.name===s.name);if(!py){py={id:uid('py'),name:s.name,role:s.role};DB.payees.push(py)}
+      DB.splits.push({id:uid('sp'),track:tr.id,payee:py.id,role:s.role,percent:+s.percent})});});
+  submitRelease(r);WZ=null;toast('“'+r.title+'” submitted — delivering to stores');go('#/app/release/'+r.id);
+}
+
+/* ---------- ROYALTIES ---------- */
+function royalties(){
+  const rows=DB.lines.slice(-12).reverse();
+  const inner=apptop('Royalties')+`
+  <div class="panelbox rv"><div class="ph"><div><h3>Statements</h3><p>Import a statement to see it matched, split and credited to wallets.</p></div>
+    <button class="btn btn-gold btn-sm" onclick="doImport()">Import demo statement</button></div>
+    ${DB.reports.length?`<table><tr><th>Period</th><th>Lines</th><th class="right">Gross</th></tr>
+    ${DB.reports.slice(0,6).map(rp=>`<tr><td>${rp.period}</td><td>${rp.lineCount}</td><td class="right mono">${money.usd(rp.gross)}</td></tr>`).join('')}</table>`:'<div class="empty">No statements yet.</div>'}</div>
+  ${rows.length?`<div class="panelbox rv"><h3 style="margin-bottom:14px">Recent lines (matched by ISRC)</h3>
+    <table><tr><th>Track</th><th>DSP</th><th>Streams</th><th class="right">Revenue</th></tr>
+    ${rows.map(l=>{const t=DB.tracks.find(x=>x.id===l.track);return`<tr><td>${t?t.title:'—'}</td><td>${l.dsp}</td><td>${l.streams.toLocaleString()}</td><td class="right mono">${money.usd(l.rev)}</td></tr>`}).join('')}</table></div>`:''}`;
+  return shell('royalties',inner);
+}
+function doImport(){const r=importReport();if(r)toast('Statement imported · '+money.usd(r.gross)+' across '+r.lineCount+' lines');render()}
+
+/* ---------- WALLET ---------- */
+let PM='Telebirr';
+function wallet(){
+  const me=DB.session.payee,bal=balance(me);const etb=Math.round(bal*DB.fx);
+  const hist=DB.payouts.filter(p=>p.payee===me);
+  const inner=apptop('Wallet')+`
+  <div class="balcard rv"><div class="lbl">Available balance</div><div class="big">${money.usd(bal)}</div><div class="etb">≈ ${money.etb(etb)} at ${DB.fx} Br/USD</div>
+    <div class="row"><button class="btn btn-gold" onclick="openWithdraw()">Withdraw to birr</button><button class="btn btn-ghost" onclick="go('#/app/royalties')">Import earnings</button></div></div>
+  <div id="withdrawBox"></div>
+  <div class="panelbox rv"><h3 style="margin-bottom:14px">Payout history</h3>
+    ${hist.length?`<table><tr><th>Ref</th><th>Method</th><th>Rate</th><th class="right">USD</th><th class="right">Paid (ETB)</th></tr>
+    ${hist.map(p=>`<tr><td class="mono">${p.ref}</td><td>${p.method}</td><td>${p.fx}</td><td class="right mono">${money.usd(p.usd)}</td><td class="right mono">${money.etb(p.etb)}</td></tr>`).join('')}</table>`:'<div class="empty">No payouts yet. Withdraw your balance above.</div>'}</div>`;
+  return shell('wallet',inner);
+}
+function openWithdraw(){
+  const me=DB.session.payee,bal=balance(me);
+  document.getElementById('withdrawBox').innerHTML=`<div class="panelbox rv" style="opacity:1;transform:none">
+    <h3 style="margin-bottom:6px">Withdraw</h3><p style="color:var(--muted);font-size:.85rem;margin-bottom:16px">FX is applied at payout, not at accrual.</p>
+    <div class="field"><label>Method</label><div class="methods">${['Telebirr','Chapa','CBE Birr','Bank'].map(m=>`<div class="method ${PM===m?'on':''}" onclick="PM='${m}';openWithdraw()">${m}</div>`).join('')}</div></div>
+    <div class="grid2"><div class="field"><label>Amount (USD)</label><input id="wd_amt" type="number" value="${(bal/100).toFixed(2)}" oninput="wdPrev()"></div>
+    <div class="field"><label>FX rate (Br/USD)</label><input id="wd_fx" type="number" value="${DB.fx}" oninput="wdPrev()"></div></div>
+    <div class="sumbar ok" id="wd_prev">You receive <span>${money.etb(Math.round(bal*DB.fx))}</span></div>
+    <div class="wnav"><button class="btn btn-ghost" onclick="document.getElementById('withdrawBox').innerHTML=''">Cancel</button><button class="btn btn-gold" onclick="doWithdraw()">Confirm withdrawal</button></div></div>`;
+}
+function wdPrev(){const a=Math.round(parseFloat(document.getElementById('wd_amt').value||0)*100);const fx=parseFloat(document.getElementById('wd_fx').value||DB.fx);document.getElementById('wd_prev').innerHTML='You receive <span>'+money.etb(Math.round(a*fx))+'</span>'}
+function doWithdraw(){const a=Math.round(parseFloat(document.getElementById('wd_amt').value||0)*100);DB.fx=parseFloat(document.getElementById('wd_fx').value)||DB.fx;const r=requestPayout(a,PM);if(r.err){toast(r.err);return}toast('Paid '+money.etb(r.ok.etb)+' to '+PM);render()}
+
+/* ---------- SETTINGS ---------- */
+function settings(){
+  const inner=apptop('Settings')+`
+  <div class="panelbox rv"><h3 style="margin-bottom:16px">Profile</h3>
+    <div class="grid2"><div class="field"><label>Name</label><input value="${DB.session.name}"></div><div class="field"><label>Email</label><input value="${DB.session.email}"></div></div></div>
+  <div class="panelbox rv"><h3 style="margin-bottom:16px">Payout method</h3>
+    <div class="methods">${['Telebirr','Chapa','CBE Birr','Bank'].map(m=>`<div class="method ${PM===m?'on':''}" onclick="PM='${m}';render()">${m}</div>`).join('')}</div>
+    <div class="field" style="margin-top:14px"><label>${PM==='Bank'?'Account number':'Phone number'}</label><input placeholder="${PM==='Bank'?'1000xxxxxxxx':'09xxxxxxxx'}"></div>
+    <button class="btn btn-gold btn-sm" onclick="toast('Payout method saved')">Save</button></div>
+  <div class="panelbox rv"><h3 style="margin-bottom:8px">Language</h3><p style="color:var(--muted);font-size:.88rem">App interface localization (Amharic, Afaan Oromo, Tigrinya, Somali) ships with production. The marketing site is already bilingual.</p></div>
+  <button class="btn btn-ghost" onclick="logout()">Log out</button>`;
+  return shell('settings',inner);
+}
+
+/* ---------- RENDER ---------- */
+function render(){
+  const s=seg();
+  if(s[0]==='app'&&!DB.session){location.hash='#/login';return}
+  let html='';
+  if(!s.length||s[0]==='pricing')html=landing();
+  else if(s[0]==='login')html=login();
+  else if(s[0]==='signup')html=signupView();
+  else if(s[0]==='app'){
+    const sub=s[1]||'';
+    if(sub===''||sub==='dashboard')html=dashboard();
+    else if(sub==='music')html=music();
+    else if(sub==='royalties')html=royalties();
+    else if(sub==='wallet')html=wallet();
+    else if(sub==='settings')html=settings();
+    else if(sub==='release'&&s[2]==='new'){if(!WZ)wizardInit();html=newRelease();}
+    else if(sub==='release'&&s[2])html=releaseDetail(s[2]);
+    else html=dashboard();
+  } else html=landing();
+  root.innerHTML=html;
+  afterRender();
+}
+function afterRender(){
+  // waveform
+  const g=document.getElementById('bars');
+  if(g){const n=64,w=740,st=w/n;for(let i=0;i<n;i++){const x=i*st+6,b=Math.sin(i/n*Math.PI),h=8+b*32+Math.random()*20;const l=document.createElementNS('http://www.w3.org/2000/svg','line');l.setAttribute('x1',x);l.setAttribute('x2',x);l.setAttribute('y1',45-h/2);l.setAttribute('y2',45+h/2);l.setAttribute('opacity',(0.35+b*0.5).toFixed(2));g.appendChild(l);}}
+  // reveals
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.12});
+  document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+  // count-up + money + chart bars
+  document.querySelectorAll('[data-count]').forEach(el=>countTo(el,+el.dataset.count,v=>Math.round(v).toLocaleString()));
+  document.querySelectorAll('[data-money]').forEach(el=>countTo(el,+el.dataset.money,v=>money.usd(v)));
+  requestAnimationFrame(()=>document.querySelectorAll('.bar[data-h]').forEach(b=>b.style.height=b.dataset.h+'%'));
+}
+function countTo(el,to,fmt){let s=null,dur=900;function step(t){if(!s)s=t;const p=Math.min((t-s)/dur,1);el.textContent=fmt(to*(0.2+0.8*p*p*(3-2*p)));if(p<1)requestAnimationFrame(step)}requestAnimationFrame(step)}
+window.addEventListener('hashchange',render);
+render();
+</script>
+</body>
+</html>

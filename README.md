@@ -8,7 +8,7 @@ This repository contains a production-structured Next.js 15 rebuild of the origi
 
 ## What is included
 
-- Bilingual English/Amharic marketing site with the original landing-page copy
+- English-first launch interface with the complete bilingual English/Amharic copy preserved in source
 - Responsive artist app with desktop navigation and a mobile bottom tab bar/FAB
 - Demo login and signup
 - Live dashboard statistics and earnings-by-platform visualization
@@ -34,7 +34,7 @@ The client-side engine in `lib/domain` is deliberately independent of React and 
 
 ## Local setup
 
-Requirements: Node.js 20 or newer and npm.
+Requirements: Node.js 22 LTS and npm.
 
 ```bash
 npm ci
@@ -50,6 +50,10 @@ Password: any value with 6+ characters
 ```
 
 The application persists demo state in browser `localStorage` under `zema-domain-v1`. Use **Settings → Reset demo** to restore Abel Bekele, the live “Tizita” release, 60/25/15 splits, seeded earnings, and the May 2026 statement.
+
+### Interface language launch flag
+
+The temporary launch hides the Amharic language switch and resolves old persisted language preferences to English. All Amharic product copy remains preserved. Set `INTERFACE_LANGUAGE_SWITCH_ENABLED` in `lib/config/interface.ts` to `true` when the bilingual interface is ready to return.
 
 ## Quality checks
 
@@ -104,7 +108,9 @@ scripts/             Local preview compatibility wrapper
 
 1. Import the GitHub repository into Vercel.
 2. Keep the detected framework preset as **Next.js**.
-3. Set `NEXT_PUBLIC_SITE_URL` to the production origin.
+3. Optionally set `NEXT_PUBLIC_SITE_URL` to the production origin. Blank,
+   missing, or malformed values are ignored safely; Zema then uses Vercel's
+   production/deployment URL and finally `https://zema.hisab.et` as a fallback.
 4. Deploy. No database or secrets are required for the current browser-demo build.
 
 ### Other Node hosts
@@ -115,7 +121,9 @@ npm run build
 npm start
 ```
 
-Set `NEXT_PUBLIC_SITE_URL` before building so canonical, Open Graph, sitemap, and robots URLs use the correct origin.
+Set `NEXT_PUBLIC_SITE_URL` before building so canonical, Open Graph, sitemap,
+and robots URLs use the preferred origin. The variable is optional and is
+validated before use.
 
 ## Future backend boundary
 

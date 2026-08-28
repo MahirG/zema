@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Brand } from "@/components/ui/brand";
 import { buttonStyles } from "@/components/ui/button";
+import { INTERFACE_LANGUAGE_SWITCH_ENABLED } from "@/lib/config/interface";
 import { marketingNav, t } from "@/lib/content/marketing";
 import { useZemaStore } from "@/lib/store/zema-store";
 import { cn } from "@/lib/utils";
@@ -30,7 +31,7 @@ export function MarketingHeader(): React.JSX.Element {
           {marketingNav.map((item) => <Link href={item.href} key={item.label.en}>{t(item.label, locale)}</Link>)}
         </nav>
         <div className="marketing-controls">
-          <LanguageToggle locale={locale} onChange={setLocale} />
+          {INTERFACE_LANGUAGE_SWITCH_ENABLED && <LanguageToggle locale={locale} onChange={setLocale} />}
           <Link href="/login" className="login-link">{locale === "am" ? "ግባ" : "Log in"}</Link>
           <Link href="/signup" className={buttonStyles({ size: "sm" })}>{locale === "am" ? "ተመዝገብ" : "Create account"}</Link>
           <button className="mobile-menu-button" type="button" onClick={() => setOpen(true)} aria-label="Open menu" aria-expanded={open}><Menu aria-hidden="true" /></button>
@@ -51,7 +52,7 @@ export function MarketingHeader(): React.JSX.Element {
                 <Link href="/login">{locale === "am" ? "ግባ" : "Log in"}</Link>
               </nav>
               <Link href="/signup" className={buttonStyles({ size: "lg", className: "drawer-cta" })}>{locale === "am" ? "ተመዝገብ" : "Create account"}</Link>
-              <LanguageToggle locale={locale} onChange={setLocale} />
+              {INTERFACE_LANGUAGE_SWITCH_ENABLED && <LanguageToggle locale={locale} onChange={setLocale} />}
               <p>Hisab Technologies<br />Addis Ababa, Ethiopia</p>
             </motion.div>
           </motion.div>

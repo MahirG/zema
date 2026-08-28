@@ -2,6 +2,7 @@
 
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
+import { DEFAULT_INTERFACE_LOCALE, resolveInterfaceLocale } from "@/lib/config/interface";
 import { advanceDeliveries, importDemoStatement, requestPayout, submitReleaseDraft } from "@/lib/domain/engine";
 import { nextId } from "@/lib/domain/identifiers";
 import { createSeedDatabase } from "@/lib/domain/seed";
@@ -33,14 +34,17 @@ export const useZemaStore = create<ZemaState>()(
     (set, get) => ({
       db: createSeedDatabase(),
       sessionUserId: null,
-      locale: "en",
+      locale: DEFAULT_INTERFACE_LOCALE,
       hydrated: false,
       setHydrated: (hydrated) => set({ hydrated }),
-      setLocale: (locale) => set((state) => ({ locale, db: { ...state.db, users: state.db.users.map((user) => user.id === state.sessionUserId ? { ...user, locale } : user) } })),
+      setLocale: (requestedLocale) => set((state) => {
+        const locale = resolveInterfaceLocale(requestedLocale);
+        return { locale, db: { ...state.db, users: state.db.users.map((user) => user.id === state.sessionUserId ? { ...user, locale } : user) } };
+      }),
       loginDemo: () => {
         const user = get().db.users.find((item) => item.id === "user_abel") ?? get().db.users[0];
         if (!user) throw new Error("Demo user is missing.");
-        set({ sessionUserId: user.id, locale: user.locale });
+        set({ sessionUserId: user.id, locale: resolveInterfaceLocale(user.locale) });
         return user;
       },
       signup: (name, email) => {
@@ -51,7 +55,7 @@ export const useZemaStore = create<ZemaState>()(
         const artistId = nextId(db, "artist");
         const safeName = name.trim() || "New Artist";
         const safeEmail = email.trim() || "artist@zema.et";
-        const user: User = { id: userId, name: safeName, email: safeEmail, payeeId, locale: get().locale, createdAt };
+        const user: User = { id: userId, name: safeName, email: safeEmail, payeeId, locale: resolveInterfaceLocale(get().locale), createdAt };
         db.users.push(user);
         db.payees.push({ id: payeeId, ownerId: userId, name: safeName.split(" ")[0] ?? safeName, role: "You", email: safeEmail, payoutReady: false });
         db.artists.push({ id: artistId, ownerId: userId, name: safeName, countryCode: "ET" });
@@ -60,7 +64,7 @@ export const useZemaStore = create<ZemaState>()(
         return user;
       },
       logout: () => set({ sessionUserId: null }),
-      resetDemo: () => set({ db: createSeedDatabase(), sessionUserId: null, locale: "en" }),
+      resetDemo: () => set({ db: createSeedDatabase(), sessionUserId: null, locale: DEFAULT_INTERFACE_LOCALE }),
       submitRelease: (draft) => {
         const sessionUserId = get().sessionUserId;
         if (!sessionUserId) return { errors: ["Log in before submitting a release."] };
@@ -121,6 +125,14 @@ export const useZemaStore = create<ZemaState>()(
       storage: createJSONStorage(() => localStorage),
       skipHydration: true,
       partialize: (state) => ({ db: state.db, sessionUserId: state.sessionUserId, locale: state.locale }),
+      merge: (persistedState, currentState) => {
+        const persisted = persistedState as Partial<ZemaState> | undefined;
+        return {
+          ...currentState,
+          ...persisted,
+          locale: resolveInterfaceLocale(persisted?.locale),
+        };
+      },
       onRehydrateStorage: () => (state) => state?.setHydrated(true),
     },
   ),
